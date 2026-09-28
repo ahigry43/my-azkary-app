@@ -1,0 +1,472 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#234b38">
+  <title>أذكاري | أذكار المسلم</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Tahoma, Arial, sans-serif;
+      background: #f4f6ef;
+      color: #263d2e;
+      transition: 0.3s;
+    }
+
+    header {
+      background: #234b38;
+      color: white;
+      padding: 25px 16px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+    }
+
+    header p {
+      margin: 0;
+      color: #dce9dc;
+    }
+
+    .container {
+      width: min(800px, 94%);
+      margin: 25px auto;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 15px;
+    }
+
+    .theme-btn, .reset-btn {
+      background: #e2e9dc;
+      color: #234b38;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      background: white;
+      color: #234b38;
+      border: 1px solid #dce5d6;
+      font-weight: bold;
+    }
+
+    .tab.active {
+      background: #234b38;
+      color: white;
+    }
+
+    .section-title {
+      margin: 22px 0;
+      text-align: center;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #e2e8dc;
+      border-radius: 18px;
+      padding: 22px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 16px #243d3010;
+    }
+
+    .zekr {
+      font-size: 23px;
+      line-height: 2;
+      text-align: center;
+      margin: 0 0 14px;
+    }
+
+    .reference {
+      text-align: center;
+      color: #758171;
+      font-size: 13px;
+      margin-bottom: 15px;
+    }
+
+    .count {
+      text-align: center;
+      color: #657360;
+      margin: 10px 0;
+    }
+
+    .progress {
+      height: 6px;
+      background: #e8eee4;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 15px 0;
+    }
+
+    .bar {
+      height: 100%;
+      width: 0%;
+      background: #78966a;
+      transition: width 0.2s;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .count-btn {
+      background: #315b40;
+      color: white;
+      min-width: 145px;
+    }
+
+    .count-btn:active {
+      transform: scale(0.97);
+    }
+
+    .done {
+      background: #e5eee0;
+      color: #315b40;
+    }
+
+    .footer {
+      text-align: center;
+      color: #7c8776;
+      padding: 25px 10px;
+      font-size: 13px;
+    }
+
+    body.dark {
+      background: #17231c;
+      color: #edf3e9;
+    }
+
+    body.dark header {
+      background: #101a14;
+    }
+
+    body.dark .card,
+    body.dark .tab:not(.active) {
+      background: #24352a;
+      color: #edf3e9;
+      border-color: #3b4c3d;
+    }
+
+    body.dark .theme-btn,
+    body.dark .reset-btn {
+      background: #344738;
+      color: white;
+    }
+
+    body.dark .reference,
+    body.dark .count,
+    body.dark .footer {
+      color: #b8c8b5;
+    }
+
+    body.dark .progress {
+      background: #3a4a3c;
+    }
+
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 27px;
+      }
+
+      .zekr {
+        font-size: 21px;
+      }
+
+      .card {
+        padding: 18px;
+      }
+
+      .tab {
+        padding: 13px 8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>أذكاري</h1>
+    <p>وَاذْكُرُوا اللَّهَ كَثِيرًا لَعَلَّكُمْ تُفْلِحُونَ</p>
+  </header>
+
+  <main class="container">
+    <div class="topbar">
+      <strong>أذكار المسلم</strong>
+      <button class="theme-btn" onclick="toggleTheme()">
+        🌙 الوضع الليلي
+      </button>
+    </div>
+
+    <nav class="tabs" id="tabs"></nav>
+
+    <h2 class="section-title" id="sectionTitle"></h2>
+
+    <div id="content"></div>
+
+    <div class="actions">
+      <button class="reset-btn" onclick="resetSection()">
+        إعادة عدادات القسم
+      </button>
+    </div>
+  </main>
+
+  <footer class="footer">
+    اللهم اجعل ألسنتنا عامرة بذكرك
+    <br><br>
+    أذكاري © 2026
+  </footer>
+
+  <script>
+    const sections = {
+      morning: {
+        title: "أذكار الصباح",
+        items: [
+          {
+            text: "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ.",
+            count: 1,
+            source: "من أذكار الصباح"
+          },
+          {
+            text: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+            count: 100,
+            source: "صحيح مسلم"
+          },
+          {
+            text: "أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ",
+            count: 100,
+            source: "صحيح البخاري"
+          }
+        ]
+      },
+
+      evening: {
+        title: "أذكار المساء",
+        items: [
+          {
+            text: "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ.",
+            count: 1,
+            source: "من أذكار المساء"
+          },
+          {
+            text: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+            count: 100,
+            source: "صحيح مسلم"
+          }
+        ]
+      },
+
+      sleep: {
+        title: "أذكار النوم",
+        items: [
+          {
+            text: "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
+            count: 1,
+            source: "صحيح البخاري"
+          },
+          {
+            text: "سُبْحَانَ اللَّهِ",
+            count: 33,
+            source: "صحيح البخاري"
+          },
+          {
+            text: "الْحَمْدُ لِلَّهِ",
+            count: 33,
+            source: "صحيح البخاري"
+          },
+          {
+            text: "اللَّهُ أَكْبَرُ",
+            count: 34,
+            source: "صحيح البخاري"
+          }
+        ]
+      },
+
+      general: {
+        title: "أذكار متنوعة",
+        items: [
+          {
+            text: "لَا إِلَهَ إِلَّا اللَّهُ",
+            count: 100,
+            source: "ذكر"
+          },
+          {
+            text: "الْحَمْدُ لِلَّهِ",
+            count: 100,
+            source: "ذكر"
+          },
+          {
+            text: "اللَّهُ أَكْبَرُ",
+            count: 100,
+            source: "ذكر"
+          }
+        ]
+      }
+    };
+
+    const labels = {
+      morning: "🌅 أذكار الصباح",
+      evening: "🌇 أذكار المساء",
+      sleep: "🌙 أذكار النوم",
+      general: "🤍 أذكار متنوعة"
+    };
+
+    let current = "morning";
+    let counts = {};
+
+    try {
+      counts = JSON.parse(
+        localStorage.getItem("azkari-counts") || "{}"
+      );
+    } catch {
+      counts = {};
+    }
+
+    function save() {
+      localStorage.setItem(
+        "azkari-counts",
+        JSON.stringify(counts)
+      );
+    }
+
+    function renderTabs() {
+      const tabs = document.getElementById("tabs");
+      tabs.innerHTML = "";
+
+      Object.keys(sections).forEach(key => {
+        const btn = document.createElement("button");
+        btn.className = "tab" +
+          (key === current ? " active" : "");
+        btn.textContent = labels[key];
+
+        btn.onclick = () => {
+          current = key;
+          render();
+        };
+
+        tabs.appendChild(btn);
+      });
+    }
+
+    function render() {
+      renderTabs();
+
+      const section = sections[current];
+      document.getElementById("sectionTitle").textContent =
+        section.title;
+
+      const content = document.getElementById("content");
+      content.innerHTML = "";
+
+      section.items.forEach((item, index) => {
+        const id = current + "-" + index;
+        const done = Math.min(counts[id] || 0, item.count);
+        const finished = done >= item.count;
+        const percent = Math.round(done / item.count * 100);
+
+        const card = document.createElement("article");
+        card.className = "card";
+
+        const zekr = document.createElement("p");
+        zekr.className = "zekr";
+        zekr.textContent = item.text;
+
+        const source = document.createElement("div");
+        source.className = "reference";
+        source.textContent = item.source;
+
+        const count = document.createElement("div");
+        count.className = "count";
+        count.textContent =
+          "التكرار: " + done + " / " + item.count;
+
+        const progress = document.createElement("div");
+        progress.className = "progress";
+
+        const bar = document.createElement("div");
+        bar.className = "bar";
+        bar.style.width = percent + "%";
+        progress.appendChild(bar);
+
+        const actions = document.createElement("div");
+        actions.className = "actions";
+
+        const btn = document.createElement("button");
+        btn.className = "count-btn" +
+          (finished ? " done" : "");
+
+        btn.textContent = finished
+          ? "✓ اكتمل الذكر"
+          : "سبّح +1";
+
+        btn.disabled = finished;
+
+        btn.onclick = () => {
+          counts[id] = Math.min(
+            (counts[id] || 0) + 1,
+            item.count
+          );
+          save();
+          render();
+        };
+
+        actions.appendChild(btn);
+
+        card.append(
+          zekr, source, count, progress, actions
+        );
+
+        content.appendChild(card);
+      });
+    }
+
+    function resetSection() {
+      if (!confirm("هل تريد إعادة عدادات هذا القسم؟")) {
+        return;
+      }
+
+      sections[current].items.forEach((item, index) => {
+        delete counts[current + "-" + index];
+      });
+
+      save();
+      render();
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("dark");
+    }
+
+    render();
+  </script>
+</body>
+</html>
